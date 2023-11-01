@@ -1,0 +1,8 @@
+langchain
+openai
+chromadb
+langchainhub
+python-dotenv
+bs4
+pysqlite3-binary
+tiktoken
