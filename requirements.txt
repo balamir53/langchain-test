@@ -6,3 +6,7 @@ python-dotenv
 bs4
 pysqlite3-binary
 tiktoken
+google-api-python-client 
+google-auth-httplib2 
+google-auth-oauthlib
+google-generativeai
