@@ -12,6 +12,8 @@ from langchain import hub
 from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.llms import AzureOpenAI
 from langchain.schema.runnable import RunnablePassthrough
+from langchain.memory import ConversationSummaryMemory
+from langchain.chains import ConversationalRetrievalChain
 
 def run():
     dotenv.load_dotenv()
@@ -28,7 +30,7 @@ def run():
 
     # Prompt
     # https://smith.langchain.com/hub/rlm/rag-prompt
-    rag_prompt = hub.pull("rlm/rag-prompt")
+    # rag_prompt = hub.pull("rlm/rag-prompt")
 
     # LLM
     # llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
@@ -37,11 +39,19 @@ def run():
     # model_name="gpt-35-turbo",
     # model_name="gpt-35-turbo",
     # )
-    # RAG chain
-    rag_chain = {"context": retriever, "question": RunnablePassthrough()} | rag_prompt | llm
 
-    rag_chain.invoke("What is Task Decomposition?")
-    pass
+    memory = ConversationSummaryMemory(
+    llm=llm, memory_key="chat_history", return_messages=True)
+    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+
+    # RAG chain
+    # rag_chain = {"context": retriever, "question": RunnablePassthrough()} | rag_prompt | llm
+
+    # rag_chain.invoke("What is Task Decomposition?")
+    
+    question = "What is Task Decomposition?"
+    result = qa(question)
+    print(result["answer"])
 
 
 if __name__== "__main__":
