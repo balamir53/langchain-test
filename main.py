@@ -1,6 +1,7 @@
-__import__('pysqlite3')
+__import__("pysqlite3")
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import dotenv
 from langchain.document_loaders import WebBaseLoader
@@ -14,6 +15,7 @@ from langchain.llms import AzureOpenAI
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.memory import ConversationSummaryMemory
 from langchain.chains import ConversationalRetrievalChain
+
 
 def run():
     dotenv.load_dotenv()
@@ -41,18 +43,19 @@ def run():
     # )
 
     memory = ConversationSummaryMemory(
-    llm=llm, memory_key="chat_history", return_messages=True)
+        llm=llm, memory_key="chat_history", return_messages=True
+    )
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
 
     # RAG chain
     # rag_chain = {"context": retriever, "question": RunnablePassthrough()} | rag_prompt | llm
 
     # rag_chain.invoke("What is Task Decomposition?")
-    
+
     question = "What is Task Decomposition?"
     result = qa(question)
     print(result["answer"])
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     run()
