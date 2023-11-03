@@ -13,7 +13,7 @@ from langchain.chains import RetrievalQA
 load_dotenv(find_dotenv())
 
 llm = GooglePalm(google_api_key=os.environ["GOOGLE_API_KEY"])
-llm.temperature = 0.1W
+llm.temperature = 0.1
 
 # prompts = ["The opposite of hot is", "the opposite of cold is"]
 # llm_results = llm._generate(prompts)
