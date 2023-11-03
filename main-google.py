@@ -9,7 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 
-from langchain.chat_models import  AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI
 from langchain.memory import ConversationSummaryMemory
 from langchain.chains import ConversationalRetrievalChain
 
@@ -19,10 +19,11 @@ import pprint
 import google.generativeai as palm
 from load_creds import load_creds
 
+
 def run():
     dotenv.load_dotenv()
-    
-    # creds = load_creds()    
+
+    # creds = load_creds()
 
     # load a text from web
     loader = WebBaseLoader("https://lilianweng.github.io/posts/2023-06-23-agent/")
