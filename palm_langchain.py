@@ -8,7 +8,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.chains.question_answering import load_qa_chain
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.chains import RetrievalQA
-
+from langchain.memory import ConversationSummaryMemory
 
 load_dotenv(find_dotenv())
 
@@ -48,17 +48,39 @@ llm.temperature = 0.1
 # print(answer)
 
 
-pdf_folder_path = "/home/beast/langchain-test/1.pdf"
-pdf_loaders = PyPDFLoader(pdf_folder_path)
+class PdfRead:
+    """
+    This class initializes pdfloaders, textsplitters, vectorstore, retriver,
+    memory and langchain chain.
+    """
 
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-splits = text_splitter.split_documents(pdf_loaders.load())
-vectorstore = Chroma.from_documents(documents=splits, embedding=GooglePalmEmbeddings())
-retriever = vectorstore.as_retriever()
+    def __init__(self, folder_path) -> None:
+        self.pdf_folder_path = folder_path
+        self.pdf_loaders = PyPDFLoader(self.pdf_folder_path)
 
-pdf_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=retriever, input_key="question"
-)
+        self.text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        self.splits = self.text_splitter.split_documents(self.pdf_loaders.load())
+        self.vectorstore = Chroma.from_documents(
+            documents=self.splits, embedding=GooglePalmEmbeddings()
+        )
+        self.retriever = self.vectorstore.as_retriever()
 
-pdf_answer = pdf_chain.run("What are GANs?")
-print(pdf_answer)
+        self.memory = ConversationSummaryMemory(
+            llm=llm, memory_key="chat_history", return_messages=True
+        )
+        self.pdf_chain = RetrievalQA.from_chain_type(
+            llm=llm,
+            chain_type="stuff",
+            retriever=self.retriever,
+            input_key="question",
+            memory=self.memory,
+        )
+
+    def history(self, question):
+        """
+        returns result of llm query with question taken from user.
+        """
+        return self.pdf_chain.run(question)
+
+    # pdf_answer = pdf_chain.run("What are GANs?")
+    # print(answer)

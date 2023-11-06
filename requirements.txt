@@ -16,3 +16,5 @@ unstructured
 # pdf2image
 # pdfminer
 pypdf
+psycopg
+psycopg-binary
