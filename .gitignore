@@ -2,3 +2,6 @@
 .venv
 .chroma
 *.pyc
+__pycache__
+.vscode
+.env.example
